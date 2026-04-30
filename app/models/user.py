@@ -3,8 +3,8 @@ from app.database import Base
 import enum
 
 class UserRole(enum.Enum):
-    ADMIN = "admin"
-    MEMBER = "member"
+    admin = "admin"
+    member = "member"
 
 class User(Base):
     __tablename__ = "users"
@@ -13,4 +13,4 @@ class User(Base):
     name = Column(String, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
-    role = Column(Enum(UserRole), default=UserRole.MEMBER, nullable=False)
+    role = Column(Enum(UserRole), default=UserRole.member, nullable=False)
