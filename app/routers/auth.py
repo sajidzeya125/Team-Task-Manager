@@ -29,7 +29,12 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
 
-    return {"message": "User created successfully"}
+    return {
+        "message": "User created successfully",
+        "id": new_user.id,
+        "email": new_user.email,
+        "role": new_user.role
+    }
 
 
 

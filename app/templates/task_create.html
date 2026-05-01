@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Create Task{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h1 class="h4 mb-3">Create Task</h1>
+
+        <form id="task-form">
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input class="form-control" type="text" name="title" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="description"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Due Date</label>
+            <input class="form-control" type="date" name="due_date">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Assignee ID</label>
+            <input class="form-control" type="number" name="assignee_id">
+          </div>
+
+          <button class="btn btn-primary w-100" type="submit">Create</button>
+        </form>
+
+        <div id="task-error" class="text-danger mt-3"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const projectId = { project_id };
+
+  document.getElementById("task-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+
+    const payload = {
+      title: form.title.value,
+      description: form.description.value || null,
+      due_date: form.due_date.value || null,
+      assignee_id: form.assignee_id.value ? Number(form.assignee_id.value) : null
+    };
+
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      document.getElementById("task-error").innerText = "Not logged in.";
+      return;
+    }
+
+    const res = await fetch(`/tasks/projects/${projectId}`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      document.getElementById("task-error").innerText = err.detail || "Failed to create task";
+      return;
+    }
+
+    window.location.href = `/projects/${projectId}`;
+  });
+</script>
+{% endblock %}

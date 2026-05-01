@@ -13,7 +13,7 @@ def dashboard(
     current_user: User = Depends(get_current_user),
 ):
     query = db.query(Task)
-    if current_user.role != UserRole.ADMIN:
+    if current_user.role != UserRole.admin:
         query = query.filter(Task.assignee_id == current_user.id)
 
     total = query.count()

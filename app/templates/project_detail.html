@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Project Tasks{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4">Project Tasks</h1>
+  <a class="btn btn-primary" href="/projects/{{ project_id }}/tasks/new">New Task</a>
+</div>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Status</th>
+          <th>Due</th>
+          <th>Assignee</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tasks-body">
+        <tr>
+          <td colspan="5" class="text-center text-muted py-4">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const projectId = { project_id };
+  const tasksBody = document.getElementById("tasks-body");
+
+  async function loadTasks() {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      tasksBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">Not logged in</td></tr>`;
+      return;
+    }
+
+    const res = await fetch(`/tasks/projects/${projectId}`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      tasksBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">Failed to load tasks</td></tr>`;
+      return;
+    }
+
+    const tasks = await res.json();
+    if (tasks.length === 0) {
+      tasksBody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">No tasks yet.</td></tr>`;
+      return;
+    }
+
+    tasksBody.innerHTML = tasks.map(t => `
+      <tr>
+        <td>${t.title}</td>
+        <td>
+          <select class="form-select form-select-sm" onchange="updateStatus(${t.id}, this.value)">
+            <option value="TODO" ${t.status === "TODO" ? "selected" : ""}>TODO</option>
+            <option value="IN_PROGRESS" ${t.status === "IN_PROGRESS" ? "selected" : ""}>IN_PROGRESS</option>
+            <option value="DONE" ${t.status === "DONE" ? "selected" : ""}>DONE</option>
+          </select>
+        </td>
+        <td>${t.due_date ?? ""}</td>
+        <td>${t.assignee_id ?? ""}</td>
+        <td></td>
+      </tr>
+    `).join("");
+  }
+
+  async function updateStatus(taskId, status) {
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
+
+    await fetch(`/tasks/${taskId}`, {
+      method: "PATCH",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ status })
+    });
+  }
+
+  loadTasks();
+</script>
+{% endblock %}

@@ -19,7 +19,7 @@ def create_task(
         ProjectMember.project_id == project_id,
         ProjectMember.user_id == current_user.id
     ).first()
-    if not is_member and current_user.role != UserRole.ADMIN:
+    if not is_member and current_user.role != UserRole.admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not a project member")
 
     task = Task(
@@ -45,7 +45,7 @@ def list_tasks(
         ProjectMember.project_id == project_id,
         ProjectMember.user_id == current_user.id
     ).first()
-    if not is_member and current_user.role != UserRole.ADMIN:
+    if not is_member and current_user.role != UserRole.admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not a project member")
 
     return db.query(Task).filter(Task.project_id == project_id).all()
@@ -61,7 +61,7 @@ def update_task(
     if not task:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
 
-    if current_user.role != UserRole.ADMIN and task.assignee_id != current_user.id:
+    if current_user.role != UserRole.admin and task.assignee_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
 
     if payload.status:

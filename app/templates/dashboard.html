@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="mb-4">
+  <h1 class="h4">Dashboard</h1>
+  <p class="text-muted">Quick overview of your workspace.</p>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="text-muted">Total Tasks</h6>
+        <div class="display-6" id="total-count">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="text-muted">To Do</h6>
+        <div class="display-6" id="todo-count">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="text-muted">In Progress</h6>
+        <div class="display-6" id="inprogress-count">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="text-muted">Done</h6>
+        <div class="display-6" id="done-count">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-3">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h6 class="text-muted">Overdue</h6>
+      <div class="display-6 text-danger" id="overdue-count">—</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function loadDashboard() {
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
+
+    const res = await fetch("/dashboard", {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (!res.ok) return;
+
+    const data = await res.json();
+    document.getElementById("total-count").innerText = data.total;
+    document.getElementById("todo-count").innerText = data.todo;
+    document.getElementById("inprogress-count").innerText = data.in_progress;
+    document.getElementById("done-count").innerText = data.done;
+    document.getElementById
+("overdue-count").innerText = data.overdue;
+  }

@@ -3,9 +3,9 @@ from app.database import Base
 import enum
 
 class TaskStatus(enum.Enum):
-    TODO = "To Do"
-    IN_PROGRESS = "In Progress"
-    DONE = "Done"
+    TODO = "TODO"
+    IN_PROGRESS = "IN_PROGRESS"
+    DONE = "DONE"
 
 
 class Task(Base):
@@ -17,7 +17,7 @@ class Task(Base):
     status = Column(Enum(TaskStatus), default=TaskStatus.TODO, nullable=False)
     due_date = Column(Date, nullable=True)
     project_id = Column(Integer, ForeignKey("projects.id"), nullable=False)
-    assigned_to_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    assignee_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     created_by = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     
