@@ -38,7 +38,7 @@
 </div>
 
 <script>
-  const projectId = { project_id };
+  const projectId = {{ project_id }};
 
   document.getElementById("task-form").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -53,11 +53,11 @@
 
     const token = localStorage.getItem("access_token");
     if (!token) {
-      document.getElementById("task-error").innerText = "Not logged in.";
+      window.location.href = "/login";
       return;
     }
 
-    const res = await fetch(`/tasks/projects/${projectId}`, {
+    const res = await fetch(`/api/tasks/projects/${projectId}`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
