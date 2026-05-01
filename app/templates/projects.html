@@ -31,11 +31,11 @@
       const tbody = document.getElementById("projects-body");
 
       if (!token) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center text-danger py-4">Not logged in</td></tr>`;
+        window.location.href = "/login";
         return;
       }
 
-      const res = await fetch("/projects", {
+      const res = await fetch("/api/projects/", {
         headers: { "Authorization": `Bearer ${token}` }
       });
 

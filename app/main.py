@@ -8,10 +8,10 @@ from fastapi.templating import Jinja2Templates
 app=FastAPI()
 templates = Jinja2Templates(directory="app/templates")
 
-app.include_router(auth.router)
-app.include_router(projects.router)
-app.include_router(tasks.router)
-app.include_router(dashboard.router)
+app.include_router(auth.router, prefix="/api")
+app.include_router(projects.router, prefix="/api")
+app.include_router(tasks.router, prefix="/api")
+app.include_router(dashboard.router, prefix="/api")
 
 
 
@@ -35,6 +35,11 @@ def projects_page(request: Request):
 @app.get("/dashboard")
 def dashboard_page(request: Request):    
     return templates.TemplateResponse(request, "dashboard.html", {"request": request})  
+
+
+@app.get("/projects/new")
+def new_project_page(request: Request):
+    return templates.TemplateResponse(request, "project_new.html", {"request": request})
 
 
 @app.get("/projects/{project_id}")

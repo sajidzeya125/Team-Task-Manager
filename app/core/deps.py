@@ -7,13 +7,10 @@ from jose import jwt, JWTError
 
 from app.models.user import User, UserRole
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
 JWT_SECRET = os.getenv("JWT_SECRET")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
-
-print("JWT_SECRET", JWT_SECRET)
-print("JWT_ALGORITHM", JWT_ALGORITHM)
 
 def get_db():
     db = SessionLocal()

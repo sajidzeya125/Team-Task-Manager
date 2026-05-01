@@ -53,9 +53,9 @@
 <script>
   async function loadDashboard() {
     const token = localStorage.getItem("access_token");
-    if (!token) return;
+    if (!token) { window.location.href = "/login"; return; }
 
-    const res = await fetch("/dashboard", {
+    const res = await fetch("/api/dashboard/", {
       headers: { "Authorization": `Bearer ${token}` }
     });
 
@@ -66,6 +66,9 @@
     document.getElementById("todo-count").innerText = data.todo;
     document.getElementById("inprogress-count").innerText = data.in_progress;
     document.getElementById("done-count").innerText = data.done;
-    document.getElementById
-("overdue-count").innerText = data.overdue;
+    document.getElementById("overdue-count").innerText = data.overdue;
   }
+
+  loadDashboard();
+</script>
+{% endblock %}

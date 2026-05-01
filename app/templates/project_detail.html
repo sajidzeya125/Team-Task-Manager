@@ -28,17 +28,17 @@
 </div>
 
 <script>
-  const projectId = { project_id };
+  const projectId = {{ project_id }};
   const tasksBody = document.getElementById("tasks-body");
 
   async function loadTasks() {
     const token = localStorage.getItem("access_token");
     if (!token) {
-      tasksBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">Not logged in</td></tr>`;
+      window.location.href = "/login";
       return;
     }
 
-    const res = await fetch(`/tasks/projects/${projectId}`, {
+    const res = await fetch(`/api/tasks/projects/${projectId}`, {
       headers: { "Authorization": `Bearer ${token}` }
     });
 
@@ -74,7 +74,7 @@
     const token = localStorage.getItem("access_token");
     if (!token) return;
 
-    await fetch(`/tasks/${taskId}`, {
+    await fetch(`/api/tasks/${taskId}`, {
       method: "PATCH",
       headers: {
         "Authorization": `Bearer ${token}`,
